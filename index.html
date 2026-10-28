@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlatonCraft Launcher — Швидкий та стильний лаунчер Minecraft</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            cyan: '#06b6d4',
+                            purple: '#a855f7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s infinite linear',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { filter: 'drop-shadow(0 0 15px rgba(34, 197, 94, 0.4))' },
+                            '100%': { filter: 'drop-shadow(0 0 35px rgba(6, 182, 212, 0.8))' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Montserrat Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #090d16;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(34, 197, 94, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px -10px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Neon Background Gradients */
+        .neon-glow-emerald {
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+
+        .neon-glow-cyan {
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+
+        .neon-glow-purple {
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+
+        /* Animated Shimmer Button Background */
+        .btn-shimmer {
+            background: linear-gradient(90deg, #16a34a 0%, #22c55e 25%, #06b6d4 50%, #22c55e 75%, #16a34a 100%);
+            background-size: 200% auto;
+            animation: shimmer 4s infinite linear;
+        }
+
+        /* Canvas particles */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-black">
+
+    <!-- Interactive Canvas Background -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Ambient Neon Lights -->
+    <div class="fixed -top-40 -left-40 w-96 h-96 neon-glow-emerald pointer-events-none z-0"></div>
+    <div class="fixed top-1/3 -right-40 w-[30rem] h-[30rem] neon-glow-cyan pointer-events-none z-0"></div>
+    <div class="fixed -bottom-40 left-1/3 w-[35rem] h-[35rem] neon-glow-purple pointer-events-none z-0"></div>
+
+    <!-- Header Navigation -->
+    <header class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <nav class="glass-panel rounded-2xl px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-cyan flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid font-black text-xl text-slate-950 fa-cube"></i>
+                </div>
+                <span class="text-2xl font-extrabold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-brand-500">
+                    PlatonCraft
+                </span>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-brand-500 border border-brand-500/30 animate-pulse">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 mr-2"></span> v1.0.0 Ready
+                </span>
+                <a href="#download" class="hidden sm:inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+                    <i class="fa-solid fa-download mr-2 text-brand-500"></i> Скачати
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Hero Section -->
+    <main class="relative z-10 flex-grow flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        <div class="max-w-4xl mx-auto text-center">
+            
+            <!-- Floating Badge Header -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-brand-500/20 mb-8 animate-float">
+                <i class="fa-solid fa-bolt text-brand-500"></i>
+                <span class="text-xs sm:text-sm font-semibold text-slate-300">Оновлений випуск • Minecraft Launcher</span>
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white mb-6 leading-none">
+                Швидкий та стильний <br class="hidden sm:inline"/>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-500 via-brand-cyan to-brand-purple">
+                    лаунчер Minecraft
+                </span>
+            </h1>
+
+            <!-- Tags Section -->
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 my-8">
+                <span class="glass-card px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-emerald-400 border border-emerald-500/20 flex items-center gap-2">
+                    <i class="fa-solid fa-bolt-lightning"></i> Швидке завантаження
+                </span>
+                <span class="glass-card px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-cyan-400 border border-cyan-500/20 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Зручний інтерфейс
+                </span>
+                <span class="glass-card px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-purple-400 border border-purple-500/20 flex items-center gap-2">
+                    <i class="fa-solid fa-gauge-high"></i> Моди
+                </span>
+                <span class="glass-card px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-emerald-400 border border-emerald-500/20 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i> Безпечно
+                </span>
+            </div>
+
+            <!-- Interactive Download Card -->
+            <div id="download" class="mt-8 sm:mt-12 glass-panel rounded-3xl p-6 sm:p-10 border border-brand-500/30 max-w-2xl mx-auto shadow-2xl relative overflow-hidden group">
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-500/10 rounded-full blur-3xl group-hover:bg-brand-500/20 transition duration-500"></div>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10 text-left">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-900/80 border border-slate-700 flex items-center justify-center text-brand-500 text-3xl shadow-inner animate-pulse-glow">
+                            <i class="fa-solid fa-rocket"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                PlatonCraft.exe
+                                <span class="text-xs bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded border border-slate-700">Windows</span>
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">Версія 1.0.0 • Офіційний інсталятор</p>
+                        </div>
+                    </div>
+
+                    <!-- Direct Download Button -->
+                    <a href="PlatonCraft.exe" download="PlatonCraft.exe" class="w-full sm:w-auto btn-shimmer text-slate-950 font-black text-base px-8 py-4 rounded-2xl shadow-lg shadow-brand-500/25 hover:shadow-brand-500/50 hover:scale-105 active:scale-95 transition duration-200 flex items-center justify-center space-x-3 text-center">
+                        <i class="fa-solid fa-circle-down text-xl"></i>
+                        <span>Завантажити</span>
+                    </a>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex flex-wrap justify-between items-center text-xs text-slate-400 gap-2">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-brand-500"></i> Пряме завантаження</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield text-brand-500"></i> Без вірусів та реклами</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-brands fa-windows text-brand-500"></i> Windows 10/11</span>
+                </div>
+            </div>
+
+            <!-- Installation Instructions -->
+            <div class="mt-16 text-left max-w-3xl mx-auto">
+                <h2 class="text-xl font-bold text-white mb-6 text-center flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-info text-brand-cyan"></i> Як розпочати гру
+                </h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="glass-card p-5 rounded-2xl">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-extrabold flex items-center justify-center mb-3">1</div>
+                        <h4 class="font-bold text-sm text-white mb-1">Завантажте</h4>
+                        <p class="text-xs text-slate-400">Натисніть кнопку «Завантажити» та збережіть PlatonCraft.exe на ПК.</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl">
+                        <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-extrabold flex items-center justify-center mb-3">2</div>
+                        <h4 class="font-bold text-sm text-white mb-1">Запустіть</h4>
+                        <p class="text-xs text-slate-400">Відкрийте файл PlatonCraft.exe та дотримуйтесь вказівок інсталятора.</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl">
+                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 font-extrabold flex items-center justify-center mb-3">3</div>
+                        <h4 class="font-bold text-sm text-white mb-1">Грайте</h4>
+                        <p class="text-xs text-slate-400">Оберіть потрібну версію Minecraft та насолоджуйтесь грою!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Requirements Card -->
+            <div class="mt-12 glass-panel rounded-2xl p-6 text-left max-w-3xl mx-auto">
+                <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-microchip text-brand-500"></i> Системні вимоги
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-300">
+                    <div class="space-y-2">
+                        <p><strong class="text-slate-400">ОС:</strong> Windows 7 / 8 / 10 / 11 (64-bit)</p>
+                        <p><strong class="text-slate-400">Процесор:</strong> Intel Core i3 / AMD Ryzen 3 або краще</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p><strong class="text-slate-400">ОЗП:</strong> 4 GB</p>
+                        <p><strong class="text-slate-400">Наявність Java не портібна</strong></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-slate-500 border-t border-slate-800/60 mt-12">
+        <p>© 2026 PlatonCraft Launcher. Всі права захищено.</p>
+        <p class="mt-1 text-slate-600">Minecraft є зареєстрованою торговою маркою Mojang Synergies AB.</p>
+    </footer>
+
+    <!-- Interactive Background Particle Script -->
+    <script>
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particlesArray = [];
+        const numberOfParticles = 45;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.color = ['rgba(34, 197, 94, ', 'rgba(6, 182, 212, ', 'rgba(168, 85, 247, '][Math.floor(Math.random() * 3)];
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                else if (this.x < 0) this.x = canvas.width;
+
+                if (this.y > canvas.height) this.y = 0;
+                else if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color + '0.8)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.onload = function() {
+            resizeCanvas();
+            initParticles();
+            animateParticles();
+        };
+    </script>
+</body>
+</html>
